@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 '''Entry point for the app'''
 from api.v1.views import app_views
 from flask import Flask
