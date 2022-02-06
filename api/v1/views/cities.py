@@ -16,7 +16,7 @@ def allCities(state_id):
     if state:
         all_cities = list(storage.all('City').values())
         listCities = []
-        for city in all_cities:
+        for city in state.cities:
             listCities.append(city.to_dict())
         return jsonify(listCities)
     else:
@@ -56,6 +56,7 @@ def createCity(state_id):
             for k in data_request.keys():
                 if k == "name":
                     obj = City(**data_request)
+                    setattr(obj, 'state_id', state_id)
                     storage.new(obj)
                     storage.save()
                     return jsonify(obj.to_dict()), 201
@@ -73,7 +74,7 @@ def updateCity(state_id):
     obj = storage.get('City', state_id)
     if obj:
         data_request = request.get_json()
-        if type(data_request) is dict:
+        if isinstance(data_request, dict):
             noKeys = ['id', 'state_id', 'created_at', 'updated_at']
             for key, value in data_request.items():
                 if key not in noKeys:
