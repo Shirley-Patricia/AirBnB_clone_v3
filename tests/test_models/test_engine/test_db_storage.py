@@ -14,11 +14,13 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
-import json
-import os
+import MySQLdb
 import pep8
 import unittest
+
 DBStorage = db_storage.DBStorage
+storage = DBStorage()
+
 classes = {"Amenity": Amenity, "City": City, "Place": Place,
            "Review": Review, "State": State, "User": User}
 
@@ -70,6 +72,36 @@ test_db_storage.py'])
 
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
+
+    @classmethod
+    def setUp(self):
+        """Set Up MySQL database"""
+        storage.reload()
+
+    @classmethod
+    def tearDown(self):
+        """Tear Down storage"""
+        storage.close()
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_get(self):
+        """Test the get method"""
+        cls = State(name="California")
+        storage.new(cls)
+        storage.save()
+        getObj = storage.get("State", cls.id)
+        self.assertTrue(getObj)
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_count(self):
+        """Test the count method"""
+        count = storage.count()
+        cls = State(name="California")
+        storage.new(cls)
+        storage.save()
+        nObjs = storage.count()
+        self.assertNotEqual(count, nObjs)
+
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_all_returns_dict(self):
         """Test that all returns a dictionaty"""
