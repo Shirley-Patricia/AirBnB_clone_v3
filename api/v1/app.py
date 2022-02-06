@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 '''Entry point for the app'''
 from api.v1.views import app_views
-from flask import Flask
+from flask import Flask, jsonify
 from models import storage
 from os import getenv
 
@@ -19,6 +19,13 @@ def teardown_appcontext(self):
     '''This method marked with teardown_appcontext()
     are are called every time the app context tears down.'''
     storage.close()
+
+
+@app.errorhandler(404)
+def page_not_found():
+    '''returns a JSON-formatted 404 status code response'''
+    return jsonify({"error": "Not found"}), 404
+
 
 if __name__ == "__main__":
     app.run(host=host,
