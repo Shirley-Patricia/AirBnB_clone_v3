@@ -4,8 +4,6 @@ Contains the FileStorage class
 """
 
 import json
-import models
-import sqlalchemy
 from models.amenity import Amenity
 from models.base_model import BaseModel
 from models.city import City
@@ -57,7 +55,7 @@ class FileStorage:
                 jo = json.load(f)
             for key in jo:
                 self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
-        except:
+        except Exception:
             pass
 
     def delete(self, obj=None):
@@ -72,7 +70,7 @@ class FileStorage:
         self.reload()
 
     def get(self, cls, id):
-        '''get method'''
+        '''This method retrieves an object according to its id'''
         if cls is None:
             return None
         for v in self.all(cls).values():
@@ -81,7 +79,8 @@ class FileStorage:
         return None
 
     def count(self, cls=None):
-        """count method"""
+        """This method counts the number of instances
+        of the class passed as argument"""
         if cls is None:
             return len(self.all())
         return len(self.all(cls).values())
