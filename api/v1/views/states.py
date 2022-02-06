@@ -30,9 +30,9 @@ def createState():
                 storage.save()
                 return jsonify(obj.to_dict()), 201
             else:
-                return jsonify(message="Missing name"), 400
+                abort(400, 'Missing name')
     else:
-        return jsonify(message="Not a JSON"), 400
+        abort(400, 'Not a JSON')
 
 
 @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
@@ -57,9 +57,9 @@ def updateState(state_id):
                 if key not in noKeys:
                     setattr(obj, key, value)
             storage.save()
-            return jsonify(obj.to_dict())
+            return jsonify(obj.to_dict()), 200
         else:
-            return jsonify(message="Not a JSON"), 404
+            abort(400, 'Not a JSON')
     else:
         abort(404)
 
