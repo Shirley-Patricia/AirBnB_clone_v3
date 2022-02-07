@@ -47,9 +47,9 @@ def createUser():
     data_request = request.get_json()
     if isinstance(data_request, dict):
         if 'email' not in data_request.keys():
-            return jsonify(message='Missing email'), 400
+            return abort(400, 'Missing email')
         elif 'password' not in data_request.keys():
-            return jsonify(message='Missing password'), 400
+            return abort(400, 'Missing password')
         else:
             obj = User(**data_request)
             storage.new(obj)
