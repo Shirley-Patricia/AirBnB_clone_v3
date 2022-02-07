@@ -18,7 +18,10 @@ import json
 import os
 import pep8
 import unittest
+
 FileStorage = file_storage.FileStorage
+storage = FileStorage()
+
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
 
@@ -125,8 +128,8 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_get(self):
         """Test the get method"""
-        storage = FileStorage()
-        new_dict = storage.all()
-        for value in classes.values():
-            cls = value
-        self.assertEqual(new_dict(cls), storage.get())
+        cls = State(name="California")
+        storage.new(cls)
+        storage.save()
+        getObj = storage.get("State", cls.id)
+        self.assertTrue(getObj)
