@@ -46,9 +46,9 @@ def createUser():
     '''Creates a User'''
     data_request = request.get_json()
     if isinstance(data_request, dict):
-        if 'email' not in data_request.keys():
+        if 'email' not in data_request:
             return abort(400, 'Missing email')
-        elif 'password' not in data_request.keys():
+        elif 'password' not in data_request:
             return abort(400, 'Missing password')
         else:
             obj = User(**data_request)
