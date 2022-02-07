@@ -51,11 +51,10 @@ def createCity(state_id):
     state = storage.get('State', state_id)
     if state:
         data_request = request.get_json()
-        if isinstance(data_request, dict):
+        if type(data_request) is dict:
             for k in data_request.keys():
                 if k == "name":
                     obj = City(**data_request)
-                    setattr(obj, 'state_id', state_id)
                     storage.new(obj)
                     storage.save()
                     return jsonify(obj.to_dict()), 201
@@ -73,7 +72,7 @@ def updateCity(state_id):
     obj = storage.get('City', state_id)
     if obj:
         data_request = request.get_json()
-        if isinstance(data_request, dict):
+        if type(data_request) is dict:
             noKeys = ['id', 'state_id', 'created_at', 'updated_at']
             for key, value in data_request.items():
                 if key not in noKeys:
