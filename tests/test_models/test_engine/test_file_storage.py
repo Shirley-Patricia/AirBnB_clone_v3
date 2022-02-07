@@ -116,6 +116,7 @@ class TestFileStorage(unittest.TestCase):
 
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_count(self):
+        """Test the count method"""
         storage = FileStorage()
         new_dict = storage.all()
         num_obj = storage.count()
@@ -123,6 +124,7 @@ class TestFileStorage(unittest.TestCase):
 
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_get(self):
+        """Test the get method"""
         storage = FileStorage()
         new_dict = storage.all()
         for value in classes.values():
