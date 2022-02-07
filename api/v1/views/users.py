@@ -14,7 +14,7 @@ def listUser():
     listUsers = []
     for user in allUsers:
         listUser.append(user.to_dict())
-    return jsonify(listUser)
+    return jsonify(listUsers)
 
 
 @app_views.route('/users/<user_id>', methods=['GET'],
@@ -44,18 +44,17 @@ def deleteUser(user_id):
 def createUser():
     '''Creates a User'''
     data_request = request.get_json()
-    if isinstance(data_request, dict):
-        if 'email' not in data_request.keys():
-            return abort(400, 'Missing email')
-        elif 'password' not in data_request.keys:
-            return abort(400, 'Missing password')
-        else:
-            obj = User(**data_request)
-            storage.new(obj)
-            storage.save()
-            return jsonify(obj.to_dict()), 201
+    if not data_request:
+        return abort(400, 'Not a JSON')
+    if 'email' not in data_request:
+        return abort(400, 'Missing email')
+    if 'password' not in data_request:
+        return abort(400, 'Missing password')
     else:
-        jsonify(message='Not a JSON'), 400
+        obj = User(**data_request)
+        storage.new(obj)
+        storage.save()
+        return jsonify(obj.to_dict()), 201
 
 
 @app_views.route('/users/<user_id>', methods=['PUT'], strict_slashes=False)
@@ -64,7 +63,7 @@ def updateUser(user_id):
     obj = storage.get(User, user_id)
     if obj:
         data_request = request.get_json()
-        if isinstance(data_request, dict):
+        if data_request:
             noKeys = ['id', 'email', 'created_at', 'updated_at']
             for key, value in data_request.items():
                 if key not in noKeys:
