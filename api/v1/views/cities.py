@@ -55,6 +55,7 @@ def createCity(state_id):
             for k in data_request.keys():
                 if k == "name":
                     obj = City(**data_request)
+                    setattr(obj, 'state_id', state_id)
                     storage.new(obj)
                     storage.save()
                     return jsonify(obj.to_dict()), 201
