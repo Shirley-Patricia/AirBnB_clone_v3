@@ -6,6 +6,7 @@ from flask import jsonify, abort, request
 from models import storage
 from models.amenity import Amenity
 
+
 @app_views.route('/amenities', methods=['GET'], strict_slashes=False)
 def allAmenities():
     '''Retrieves the list of all Amenities objects'''
@@ -16,7 +17,8 @@ def allAmenities():
     return jsonify(listAmenities)
 
 
-@app_views.route('/amenities/<amenity_id>', methods=['GET'], strict_slashes=False)
+@app_views.route('/amenities/<amenity_id>', methods=['GET'],
+                 strict_slashes=False)
 def objAmenity(amenity_id):
     '''Retrieves a Amenity object'''
     amenity = storage.get('Amenity', amenity_id)
@@ -56,7 +58,8 @@ def createAmenity():
         abort(400, 'Not a JSON')
 
 
-@app_views.route('/amenities/<amenity_id>', methods=['PUT'], strict_slashes=False)
+@app_views.route('/amenities/<amenity_id>', methods=['PUT'],
+                 strict_slashes=False)
 def updateAmenitie(amenity_id):
     '''Updates a Amenitie object according to its amenity_id'''
     obj = storage.get('Amenity', amenity_id)
