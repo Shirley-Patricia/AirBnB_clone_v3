@@ -14,7 +14,6 @@ def allCities(state_id):
     '''Retrieves the list of all City objects of a State'''
     state = storage.get('State', state_id)
     if state:
-        all_cities = list(storage.all('City').values())
         listCities = []
         for city in state.cities:
             listCities.append(city.to_dict())
