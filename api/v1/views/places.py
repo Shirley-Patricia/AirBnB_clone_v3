@@ -6,9 +6,10 @@ from flask import jsonify, abort, request
 from models import storage
 from models.place import Place
 
+
 @app_views.route('/cities/<city_id>/places', methods=['GET'],
                  strict_slashes=False)
-def allPlaces(city_id):	
+def allPlaces(city_id):
     '''Retrieves the list of all City objects of a Place'''
     city = storage.get('City', city_id)
     if city:
@@ -19,6 +20,7 @@ def allPlaces(city_id):
     else:
         abort(404)
 
+
 @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
 def objPlace(place_id):
     '''Retrieves a Place object'''
@@ -28,7 +30,9 @@ def objPlace(place_id):
     else:
         abort(404)
 
-@app_views.route('/places/<place_id>', methods=['DELETE'], strict_slashes=False)
+
+@app_views.route('/places/<place_id>', methods=['DELETE'],
+                 strict_slashes=False)
 def deletePlace(place_id):
     '''Delete a Place object'''
     place = storage.get('Place', place_id)
@@ -39,7 +43,9 @@ def deletePlace(place_id):
     else:
         abort(404)
 
-@app_views.route('/cities/<city_id>/places', methods=['POST'], strict_slashes=False)
+
+@app_views.route('/cities/<city_id>/places', methods=['POST'],
+                 strict_slashes=False)
 def createPlace(city_id):
     '''Createa a Place'''
     city = storage.get('City', city_id)
@@ -65,6 +71,7 @@ def createPlace(city_id):
             abort(400, 'Not a JSON')
     else:
         abort(404)
+
 
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
 def updatePlace(place_id):
