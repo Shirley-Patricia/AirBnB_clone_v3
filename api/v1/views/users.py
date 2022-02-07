@@ -21,7 +21,7 @@ def listUser():
                  strict_slashes=False)
 def objUser(user_id):
     '''retrieves a User object according to its user_id'''
-    obj = storage.get('User', user_id)
+    obj = storage.get(User, user_id)
     if obj:
         return jsonify(obj.to_dict())
     else:
@@ -31,7 +31,7 @@ def objUser(user_id):
 @app_views.route('/users/<user_id>', methods=['DELETE'], strict_slashes=False)
 def deleteUser(user_id):
     '''Deletes a User object according to its user_id'''
-    obj = storage.get('User', user_id)
+    obj = storage.get(User, user_id)
     if obj:
         storage.delete(obj)
         storage.save()
@@ -45,9 +45,9 @@ def createUser():
     '''Creates a User'''
     data_request = request.get_json()
     if isinstance(data_request, dict):
-        if 'email' not in data_request:
+        if 'email' not in data_request.keys():
             return abort(400, 'Missing email')
-        elif 'password' not in data_request:
+        elif 'password' not in data_request.keys:
             return abort(400, 'Missing password')
         else:
             obj = User(**data_request)
@@ -61,7 +61,7 @@ def createUser():
 @app_views.route('/users/<user_id>', methods=['PUT'], strict_slashes=False)
 def updateUser(user_id):
     '''Updates a User object according to its user_id'''
-    obj = storage.get('User', user_id)
+    obj = storage.get(User, user_id)
     if obj:
         data_request = request.get_json()
         if isinstance(data_request, dict):
