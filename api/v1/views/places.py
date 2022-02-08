@@ -65,16 +65,16 @@ def createPlace(city_id):
         storage.save()
         return jsonify(obj.to_dict()), 201
     else:
-        return 'Missing name', 400
+        abort(400, 'Missing name')
 
 
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
 def updatePlace(place_id):
     '''Updates a Place object'''
     place = storage.get('Place', place_id)
-    data_request = request.get_json()
     if not place:
         abort(404)
+    data_request = request.get_json()
     if type(data_request) is not dict:
         abort(400, 'Not a JSON')
     noKeys = ['id', 'user_id', 'city_id', 'created_at', 'updated_at']
