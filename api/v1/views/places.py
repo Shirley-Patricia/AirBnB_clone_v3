@@ -48,45 +48,38 @@ def deletePlace(place_id):
                  strict_slashes=False)
 def createPlace(city_id):
     '''Createa a Place'''
+    data_request = request.get_json()
     city = storage.get('City', city_id)
-    if city:
-        data_request = request.get_json()
-        if type(data_request) is dict:
-            if 'user_id' in data_request.keys:
-                user = storage.get('User', data_request.user_id)
-                if user:
-                    for k in data_request.keys():
-                        if k == "name":
-                            obj = Place(**data_request)
-                            storage.new(obj)
-                            storage.save()
-                            return jsonify(obj.to_dict()), 201
-                        else:
-                            abort(400, 'Missing name')
-                else:
-                    abort(404)
-            else:
-                abort(400, 'Missing user_id')
-        else:
-            abort(400, 'Not a JSON')
-    else:
+    if not city:
         abort(404)
+    if type(data_request) is not dict:
+        abort(400, 'Not a JSON')
+    if 'user_id' not in data_request.keys():
+        abort(400, 'Missing user_id')
+    user = storage.get('User', data_request['user_id'])
+    if user is None:
+        abort(404)
+    if 'name' in data_request.keys():
+        obj = Place(**data_request)
+        storage.new(obj)
+        storage.save()
+        return jsonify(obj.to_dict()), 201
+    else:
+        return 'Missing name', 400
 
 
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
 def updatePlace(place_id):
     '''Updates a Place object'''
     place = storage.get('Place', place_id)
-    if place:
-        data_request = request.get_json()
-        if type(data_request) is dict:
-            noKeys = ['id', 'user_id', 'city_id', 'created_at', 'updated_at']
-            for key, value in data_request.items():
-                if key not in noKeys:
-                    setattr(place, key, value)
-            storage.save()
-            return jsonify(place.to_dict()), 200
-        else:
-            abort(400, 'Not a JSON')
-    else:
+    data_request = request.get_json()
+    if not place:
         abort(404)
+    if type(data_request) is not dict:
+        abort(400, 'Not a JSON')
+    noKeys = ['id', 'user_id', 'city_id', 'created_at', 'updated_at']
+    for key, value in data_request.items():
+        if key not in noKeys:
+            setattr(place, key, value)
+    storage.save()
+    return jsonify(place.to_dict()), 200
