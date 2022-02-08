@@ -50,43 +50,39 @@ def deleteReview(review_id):
                  strict_slashes=False)
 def createReview(place_id):
     '''Creates a Review according to the place_id'''
+    data_request = request.get_json()
     place = storage.get('Place', place_id)
-    if place:
-        data_request = request.get_json()
-        if type(data_request) is dict:
-            if 'user_id' not in data_request.keys():
-                abort(400, 'Missing user_id')
-            if 'text' not in data_request.keys():
-                abort(400, 'Missing text')
-            else:
-                user = storage.get('User', data_request['user_id'])
-                if user:
-                    objReview = Review(**data_request)
-                    storage.new(objReview)
-                    storage.save()
-                    return jsonify(objReview.to_dict()), 201
-                else:
-                    abort(404)
-        else:
-            abort(400, 'Not a JSON')
-    else:
+    if place is None:
         abort(404)
+    if type(data_request) is not dict:
+        abort(400, 'Not a JSON')
+    if 'user_id' not in data_request.keys():
+        abort(400, 'Missing user_id')
+    user = storage.get('User', data_request['user_id'])
+    if user is None:
+        abort(404)
+    if 'text' not in data_request.keys():
+        abort(400, 'Missing text')
+    data_request['place_id'] = place_id
+    objReview = Review(**data_request)
+    storage.new(objReview)
+    storage.save()
+    return jsonify(objReview.to_dict()), 201
 
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'], strict_slashes=False)
 def updateReview(review_id):
     '''Updates a Review object according to its review_id'''
     objReview = storage.get('Review', review_id)
-    if objReview:
-        data_request = request.get_json()
-        if type(data_request) is dict:
-            noKeys = ['id', 'user_id', 'place_id', 'created_at', 'updated_at']
-            for key, value in data_request.items():
-                if key not in noKeys:
-                    setattr(objReview, key, value)
-            storage.save()
-            return jsonify(objReview.to_dict()), 200
-        else:
-            abort(400, 'Not a JSON')
-    else:
+    if objReview is None:
         abort(404)
+    data_request = request.get_json()
+    if type(data_request) is dict:
+        noKeys = ['id', 'user_id', 'place_id', 'created_at', 'updated_at']
+        for key, value in data_request.items():
+            if key not in noKeys:
+                setattr(objReview, key, value)
+        storage.save()
+        return jsonify(objReview.to_dict()), 200
+    else:
+        abort(400, 'Not a JSON')
