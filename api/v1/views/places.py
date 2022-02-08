@@ -59,13 +59,14 @@ def createPlace(city_id):
     user = storage.get('User', data_request['user_id'])
     if user is None:
         abort(404)
-    if 'name' in data_request.keys():
-        obj = Place(**data_request)
-        storage.new(obj)
-        storage.save()
-        return jsonify(obj.to_dict()), 201
-    else:
+    if 'name' not in data_request.keys():
         abort(400, 'Missing name')
+
+    data_request['city_id'] = city_id
+    obj = Place(**data_request)
+    storage.new(obj)
+    storage.save()
+    return jsonify(obj.to_dict()), 201
 
 
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
